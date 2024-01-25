@@ -1,11 +1,8 @@
 export interface IFilm {
 	id: number
-	movie: string
-	ticketLeft: number
-	room: number
+	name: string
 	date: string
-	time: string
-	language: string
-	duration: number
-	price: number
+	author: string
+	description: string
+	image: string
 }

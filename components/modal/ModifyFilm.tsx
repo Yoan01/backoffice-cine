@@ -27,42 +27,30 @@ interface ModifyFilmProps {
 const ModifyFilm: React.FC<ModifyFilmProps> = ({ isOpen, onClose, film }) => {
 	const toast = useToast()
 
-	const [id, setId] = useState(0)
-	const [movie, setMovie] = useState('')
-	const [ticketLeft, setTicketLeft] = useState(0)
-	const [room, setRoom] = useState(0)
+	const [name, setName] = useState('')
 	const [date, setDate] = useState('')
-	const [time, setTime] = useState('')
-	const [language, setLanguage] = useState('')
-	const [duration, setDuration] = useState(0)
-	const [price, setPrice] = useState(0)
+	const [author, setAuthor] = useState('')
+	const [description, setDescription] = useState('')
+	const [image, setImage] = useState('')
 
 	useEffect(() => {
 		if (isOpen && film) {
-			setId(film.id)
-			setMovie(film.movie)
-			setTicketLeft(film.ticketLeft)
-			setRoom(film.room)
+			setName(film.name)
 			setDate(film.date)
-			setTime(film.time)
-			setLanguage(film.language)
-			setDuration(film.duration)
-			setPrice(film.price)
+			setAuthor(film.author)
+			setDescription(film.description)
+			setImage(film.image)
 		}
 	}, [isOpen])
 
 	const { mutate } = useMutation({
 		mutationFn: () =>
-			axios.post('http://localhost:3002/shows/postUpdateShow', {
-				id,
-				movie,
-				ticketLeft,
-				room,
+			axios.post(`http://localhost:8000/films/` + film?.id, {
+				name,
 				date,
-				time,
-				language,
-				duration,
-				price,
+				author,
+				description,
+				image,
 			}),
 		onSuccess: () => {
 			toast({
@@ -97,74 +85,42 @@ const ModifyFilm: React.FC<ModifyFilmProps> = ({ isOpen, onClose, film }) => {
 					<FormControl>
 						<FormLabel>Movie</FormLabel>
 						<Input
-							value={movie}
+							value={name}
 							placeholder="Movie"
-							onChange={(e) => setMovie(e.target.value)}
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Ticket Left</FormLabel>
-						<Input
-							value={ticketLeft}
-							type="number"
-							placeholder="Ticket Left"
-							onChange={(e) => setTicketLeft(parseInt(e.target.value))}
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Room</FormLabel>
-						<Input
-							value={room}
-							type="number"
-							placeholder="Room"
-							onChange={(e) => setRoom(parseInt(e.target.value))}
+							onChange={(e) => setName(e.target.value)}
 						/>
 					</FormControl>
 					<FormControl>
 						<FormLabel>Date</FormLabel>
 						<Input
-							value={date}
 							type="date"
+							value={date}
 							placeholder="Date"
 							onChange={(e) => setDate(e.target.value)}
 						/>
 					</FormControl>
 					<FormControl>
-						<FormLabel>Time</FormLabel>
+						<FormLabel>Auteur</FormLabel>
 						<Input
-							value={time}
-							type="time"
-							placeholder="Time"
-							onChange={(e) => setTime(e.target.value)}
+							value={author}
+							placeholder="Auteur"
+							onChange={(e) => setAuthor(e.target.value)}
 						/>
 					</FormControl>
 					<FormControl>
-						<FormLabel>Language</FormLabel>
-						<Select
-							value={language}
-							placeholder="Language"
-							onChange={(e) => setLanguage(e.target.value)}
-						>
-							<option value="Français">Français</option>
-							<option value="English">English</option>
-						</Select>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Duration (min)</FormLabel>
+						<FormLabel>Description</FormLabel>
 						<Input
-							value={duration}
-							type="number"
-							placeholder="Duration (min)"
-							onChange={(e) => setDuration(parseInt(e.target.value))}
+							value={description}
+							placeholder="Description"
+							onChange={(e) => setDescription(e.target.value)}
 						/>
 					</FormControl>
 					<FormControl>
-						<FormLabel>Price</FormLabel>
+						<FormLabel>Image</FormLabel>
 						<Input
-							value={price}
-							type="number"
-							placeholder="price"
-							onChange={(e) => setPrice(parseInt(e.target.value))}
+							value={image}
+							placeholder="Entrer l'url de l'image"
+							onChange={(e) => setImage(e.target.value)}
 						/>
 					</FormControl>
 				</ModalBody>

@@ -41,9 +41,7 @@ export default function filmPage() {
 	const { data: films } = useQuery({
 		queryKey: ['films'],
 		queryFn: () =>
-			fetch('http://localhost:3002/shows/getAllFilms').then((res) =>
-				res.json()
-			),
+			fetch('http://localhost:8000/films').then((res) => res.json()),
 	})
 
 	const handleFilmSelected = (film: IFilm) => {
@@ -52,7 +50,8 @@ export default function filmPage() {
 	}
 
 	const { mutate } = useMutation({
-		mutationFn: () => axios.post('http://localhost:3002/shows/delete', {}),
+		mutationFn: (film: IFilm) =>
+			axios.delete('http://localhost:8000/films/' + film.id),
 		onSuccess: () => {
 			toast({
 				title: 'Film supprimé',
@@ -91,12 +90,10 @@ export default function filmPage() {
 						<Tr>
 							<Th>Id</Th>
 							<Th>Name Movie</Th>
-							<Th isNumeric>Ticket Left</Th>
-							<Th isNumeric>Room</Th>
-							<Th> Date </Th>
-							<Th> Heure </Th>
-							<Th> langue </Th>
-							<Th isNumeric> durée </Th>
+							<Th>Date</Th>
+							<Th>Author</Th>
+							<Th>Description</Th>
+							<Th>Image</Th>
 							<Th></Th>
 							<Th></Th>
 						</Tr>
@@ -105,13 +102,11 @@ export default function filmPage() {
 						{films?.map((film: IFilm) => (
 							<Tr key={film.id}>
 								<Td>{film.id}</Td>
-								<Td>{film.movie}</Td>
-								<Td isNumeric>{film.ticketLeft}</Td>
-								<Td isNumeric>{film.room}</Td>
-								<Td>{film.date}</Td>
-								<Td>{film.time}</Td>
-								<Td>{film.language}</Td>
-								<Td isNumeric>{film.duration}</Td>
+								<Td>{film.name}</Td>
+								<Td isNumeric>{film.date}</Td>
+								<Td isNumeric>{film.author}</Td>
+								<Td>{film.description}</Td>
+								<Td>{film.image}</Td>
 								<Td></Td>
 								<Td>
 									<Flex gap={3}>
@@ -139,7 +134,7 @@ export default function filmPage() {
 
 										<Button
 											onClick={() => {
-												mutate()
+												mutate(film)
 											}}
 										>
 											<svg

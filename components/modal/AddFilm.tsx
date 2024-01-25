@@ -25,26 +25,20 @@ interface AddFilmProps {
 const AddFilm: React.FC<AddFilmProps> = ({ isOpen, onClose }) => {
 	const toast = useToast()
 
-	const [movie, setMovie] = useState('')
-	const [ticketLeft, setTicketLeft] = useState(0)
-	const [room, setRoom] = useState(0)
+	const [name, setName] = useState('')
 	const [date, setDate] = useState('')
-	const [time, setTime] = useState('')
-	const [language, setLanguage] = useState('')
-	const [duration, setDuration] = useState(0)
-	const [price, setPrice] = useState(0)
+	const [author, setAuthor] = useState('')
+	const [description, setDescription] = useState('')
+	const [image, setImage] = useState('')
 
 	const { mutate } = useMutation({
 		mutationFn: () =>
-			axios.post('http://localhost:3002/shows/postAddShow', {
-				movie,
-				ticketLeft,
-				room,
+			axios.post('http://localhost:8000/films', {
+				name,
 				date,
-				time,
-				language,
-				duration,
-				price,
+				author,
+				description,
+				image,
 			}),
 		onSuccess: () => {
 			toast({
@@ -80,23 +74,7 @@ const AddFilm: React.FC<AddFilmProps> = ({ isOpen, onClose }) => {
 						<FormLabel>Movie</FormLabel>
 						<Input
 							placeholder="Movie"
-							onChange={(e) => setMovie(e.target.value)}
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Ticket Left</FormLabel>
-						<Input
-							type="number"
-							placeholder="Ticket Left"
-							onChange={(e) => setTicketLeft(parseInt(e.target.value))}
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Room</FormLabel>
-						<Input
-							type="number"
-							placeholder="Room"
-							onChange={(e) => setRoom(parseInt(e.target.value))}
+							onChange={(e) => setName(e.target.value)}
 						/>
 					</FormControl>
 					<FormControl>
@@ -108,37 +86,24 @@ const AddFilm: React.FC<AddFilmProps> = ({ isOpen, onClose }) => {
 						/>
 					</FormControl>
 					<FormControl>
-						<FormLabel>Time</FormLabel>
+						<FormLabel>Auteur</FormLabel>
 						<Input
-							type="time"
-							placeholder="Time"
-							onChange={(e) => setTime(e.target.value)}
+							placeholder="Auteur"
+							onChange={(e) => setAuthor(e.target.value)}
 						/>
 					</FormControl>
 					<FormControl>
-						<FormLabel>Language</FormLabel>
-						<Select
-							placeholder="Language"
-							onChange={(e) => setLanguage(e.target.value)}
-						>
-							<option value="Français">Français</option>
-							<option value="English">English</option>
-						</Select>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Duration (min)</FormLabel>
+						<FormLabel>Description</FormLabel>
 						<Input
-							type="number"
-							placeholder="Duration (min)"
-							onChange={(e) => setDuration(parseInt(e.target.value))}
+							placeholder="Description"
+							onChange={(e) => setDescription(e.target.value)}
 						/>
 					</FormControl>
 					<FormControl>
-						<FormLabel>Price</FormLabel>
+						<FormLabel>Image</FormLabel>
 						<Input
-							type="number"
-							placeholder="price"
-							onChange={(e) => setPrice(parseInt(e.target.value))}
+							placeholder="Entrer l'url de l'image"
+							onChange={(e) => setImage(e.target.value)}
 						/>
 					</FormControl>
 				</ModalBody>
@@ -149,8 +114,6 @@ const AddFilm: React.FC<AddFilmProps> = ({ isOpen, onClose }) => {
 					<Button
 						colorScheme="blue"
 						onClick={() => {
-							console.log('mutation')
-
 							mutate()
 						}}
 					>
