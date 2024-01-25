@@ -2,7 +2,7 @@
 import { Button, Flex, Text } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 
-export default function Home() {
+export default function FilmPage() {
 	const [films, setFilms] = useState([])
 
 	useEffect(() => {

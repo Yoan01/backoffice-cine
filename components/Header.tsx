@@ -39,9 +39,6 @@ export const Header: React.FC = () => {
 				<Link as={NextLink} href="/films" mr={4}>
 					Films
 				</Link>
-				<Link as={NextLink} href="/series" mr={4}>
-					Séries
-				</Link>
 				<Link as={NextLink} href="/seances">
 					Séances
 				</Link>
