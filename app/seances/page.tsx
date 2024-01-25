@@ -52,7 +52,12 @@ export default function SeancePage() {
 	}
 
 	const { mutate } = useMutation({
-		mutationFn: () => axios.post('http://localhost:3002/shows/delete', {}),
+		mutationFn: (seance: ISeance) =>
+			axios.delete('http://localhost:3002/shows/getDeleteShow', {
+				params: {
+					id: seance.id,
+				},
+			}),
 		onSuccess: () => {
 			toast({
 				title: 'Séance supprimée',
@@ -139,7 +144,7 @@ export default function SeancePage() {
 
 										<Button
 											onClick={() => {
-												mutate()
+												mutate(seance)
 											}}
 										>
 											<svg

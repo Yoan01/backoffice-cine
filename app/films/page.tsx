@@ -1,48 +1,170 @@
 'use client'
-import { Button, Flex, Text } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
+import AddFilm from '@/components/modal/AddFilm'
+import ModifyFilm from '@/components/modal/ModifyFilm'
+import { IFilm } from '@/interface/IFilm'
+import {
+	Box,
+	Button,
+	Flex,
+	Table,
+	TableContainer,
+	Tbody,
+	Td,
+	Text,
+	Th,
+	Thead,
+	Tr,
+	useDisclosure,
+	useToast,
+} from '@chakra-ui/react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { useState } from 'react'
 
-export default function FilmPage() {
-	const [films, setFilms] = useState([])
+export default function filmPage() {
+	const toast = useToast()
 
-	useEffect(() => {
-		// Appel à l'API pour récupérer les films
-		fetch('https://api.example.com/films')
-			.then((response) => response.json())
-			.then((data) => setFilms(data))
-			.catch((error) => console.error(error))
-	}, [])
+	const {
+		isOpen: addIsOpen,
+		onClose: addClose,
+		onOpen: addOnOpen,
+	} = useDisclosure()
 
-	const handleDeleteFilm = (filmId: any) => {
-		// Appel à l'API pour supprimer le film avec l'ID filmId
-		fetch(`https://api.example.com/films/${filmId}`, {
-			method: 'DELETE',
-		})
-			.then((response) => {
-				if (response.ok) {
-					// Supprimer le film de la liste des films affichés
-					setFilms(
-						films.filter(
-							(film: { id: number; title: string }) => film.id !== filmId
-						)
-					)
-				} else {
-					console.error('Erreur lors de la suppression du film')
-				}
-			})
-			.catch((error) => console.error(error))
+	const {
+		isOpen: modifyIsOpen,
+		onClose: modifyClose,
+		onOpen: modifyOnOpen,
+	} = useDisclosure()
+
+	const [filmSelected, setFilmSelected] = useState<IFilm>()
+
+	const { data: films } = useQuery({
+		queryKey: ['films'],
+		queryFn: () =>
+			fetch('http://localhost:3002/shows/getAllFilms').then((res) =>
+				res.json()
+			),
+	})
+
+	const handleFilmSelected = (film: IFilm) => {
+		setFilmSelected(film)
+		modifyOnOpen()
 	}
 
+	const { mutate } = useMutation({
+		mutationFn: () => axios.post('http://localhost:3002/shows/delete', {}),
+		onSuccess: () => {
+			toast({
+				title: 'Film supprimé',
+				description: 'Le film a bien été supprimé',
+				status: 'success',
+				duration: 5000,
+				isClosable: true,
+			})
+		},
+		onError: (res: any) => {
+			toast({
+				title: 'Erreur',
+				description:
+					'Une erreur est survenue : ' +
+					(res.response.data.message || 'Missing data'),
+				status: 'error',
+				duration: 5000,
+				isClosable: true,
+			})
+		},
+	})
+
 	return (
-		<Flex>
-			<Button>Add Film</Button>
-			{films.map((film: { id: number; title: string }) => (
-				<Flex key={film.id}>
-					<Text>{film.title}</Text>
-					<Button>Edit</Button>
-					<Button onClick={() => handleDeleteFilm(film.id)}>Delete</Button>
-				</Flex>
-			))}
+		<Flex flexDir={'column'}>
+			<Button
+				onClick={() => {
+					addOnOpen()
+				}}
+			>
+				Ajouter un Film
+			</Button>
+			<AddFilm isOpen={addIsOpen} onClose={addClose} />
+			<TableContainer w={'100vw'}>
+				<Table variant="simple">
+					<Thead>
+						<Tr>
+							<Th>Id</Th>
+							<Th>Name Movie</Th>
+							<Th isNumeric>Ticket Left</Th>
+							<Th isNumeric>Room</Th>
+							<Th> Date </Th>
+							<Th> Heure </Th>
+							<Th> langue </Th>
+							<Th isNumeric> durée </Th>
+							<Th></Th>
+							<Th></Th>
+						</Tr>
+					</Thead>
+					<Tbody>
+						{films?.map((film: IFilm) => (
+							<Tr key={film.id}>
+								<Td>{film.id}</Td>
+								<Td>{film.movie}</Td>
+								<Td isNumeric>{film.ticketLeft}</Td>
+								<Td isNumeric>{film.room}</Td>
+								<Td>{film.date}</Td>
+								<Td>{film.time}</Td>
+								<Td>{film.language}</Td>
+								<Td isNumeric>{film.duration}</Td>
+								<Td></Td>
+								<Td>
+									<Flex gap={3}>
+										<Button
+											onClick={() => {
+												handleFilmSelected(film)
+											}}
+										>
+											<svg
+												className="feather feather-edit"
+												fill="none"
+												height="24"
+												stroke="currentColor"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												viewBox="0 0 24 24"
+												width="24"
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+												<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+											</svg>
+										</Button>
+
+										<Button
+											onClick={() => {
+												mutate()
+											}}
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												x="0px"
+												y="0px"
+												width="24"
+												height="24"
+												viewBox="0 0 24 24"
+											>
+												<path d="M 10 2 L 9 3 L 3 3 L 3 5 L 4.109375 5 L 5.8925781 20.255859 L 5.8925781 20.263672 C 6.023602 21.250335 6.8803207 22 7.875 22 L 16.123047 22 C 17.117726 22 17.974445 21.250322 18.105469 20.263672 L 18.107422 20.255859 L 19.890625 5 L 21 5 L 21 3 L 15 3 L 14 2 L 10 2 z M 6.125 5 L 17.875 5 L 16.123047 20 L 7.875 20 L 6.125 5 z"></path>
+											</svg>
+										</Button>
+									</Flex>
+								</Td>
+							</Tr>
+						))}
+					</Tbody>
+				</Table>
+			</TableContainer>
+			<ModifyFilm
+				isOpen={modifyIsOpen}
+				onClose={modifyClose}
+				film={filmSelected}
+			/>
 		</Flex>
 	)
 }

@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
 		>
 			<Box>
 				<Text fontSize="xl" fontWeight="bold">
-					Mon Site
+					Movies
 				</Text>
 			</Box>
 			<Box>
