@@ -1,4 +1,5 @@
 import { IFilm } from '@/interface/IFilm'
+import { compareAsc, format } from "date-fns";
 import {
 	Button,
 	Modal,
@@ -36,7 +37,7 @@ const ModifyFilm: React.FC<ModifyFilmProps> = ({ isOpen, onClose, film }) => {
 	useEffect(() => {
 		if (isOpen && film) {
 			setName(film.name)
-			setDate(film.date)
+			setDate(format(new Date(film.date), "yyyy-MM-dd"))
 			setAuthor(film.author)
 			setDescription(film.description)
 			setImage(film.image)
@@ -45,7 +46,7 @@ const ModifyFilm: React.FC<ModifyFilmProps> = ({ isOpen, onClose, film }) => {
 
 	const { mutate } = useMutation({
 		mutationFn: () =>
-			axios.post(`http://localhost:8000/films/` + film?.id, {
+			axios.put(`http://localhost:8000/films/` + film?.id, {
 				name,
 				date,
 				author,
@@ -96,7 +97,7 @@ const ModifyFilm: React.FC<ModifyFilmProps> = ({ isOpen, onClose, film }) => {
 							type="date"
 							value={date}
 							placeholder="Date"
-							onChange={(e) => setDate(e.target.value)}
+							onChange={(e) => setDate(format(new Date(e.target.value), "yyyy-MM-dd"))}
 						/>
 					</FormControl>
 					<FormControl>

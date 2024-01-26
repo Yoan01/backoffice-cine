@@ -2,6 +2,7 @@
 import AddFilm from '@/components/modal/AddFilm'
 import ModifyFilm from '@/components/modal/ModifyFilm'
 import { IFilm } from '@/interface/IFilm'
+import { compareAsc, format } from "date-fns";
 import {
 	Box,
 	Button,
@@ -92,7 +93,7 @@ export default function filmPage() {
 							<Th>Name Movie</Th>
 							<Th>Date</Th>
 							<Th>Author</Th>
-							<Th>Description</Th>
+							<Th maxW={'xs'}>Description</Th>
 							<Th>Image</Th>
 							<Th></Th>
 							<Th></Th>
@@ -103,9 +104,9 @@ export default function filmPage() {
 							<Tr key={film.id}>
 								<Td>{film.id}</Td>
 								<Td>{film.name}</Td>
-								<Td isNumeric>{film.date}</Td>
+								<Td isNumeric>{format(new Date(film.date), "yyyy-MM-dd")}</Td>
 								<Td isNumeric>{film.author}</Td>
-								<Td>{film.description}</Td>
+								<Td w={"100px"}>{film.description}</Td>
 								<Td>{film.image}</Td>
 								<Td></Td>
 								<Td>
