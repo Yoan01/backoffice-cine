@@ -38,7 +38,7 @@ export default function SeancePage() {
 
 	const [seanceSelected, setSeanceSelected] = useState<ISeance>()
 
-	const { data: seances } = useQuery({
+	const { data: seances, isSuccess } = useQuery({
 		queryKey: ['seances'],
 		queryFn: () =>
 			fetch('http://localhost:3002/shows/getAllShows').then((res) =>
@@ -79,6 +79,14 @@ export default function SeancePage() {
 			})
 		},
 	})
+
+	if (!isSuccess) {
+		return (
+			<Flex justifyContent={'center'} alignItems={'center'} h={'100vh'}>
+				<Text>Le micro service est down !</Text>
+			</Flex>
+		)
+	}
 
 	return (
 		<Flex flexDir={'column'}>

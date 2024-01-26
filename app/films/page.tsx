@@ -2,7 +2,7 @@
 import AddFilm from '@/components/modal/AddFilm'
 import ModifyFilm from '@/components/modal/ModifyFilm'
 import { IFilm } from '@/interface/IFilm'
-import { compareAsc, format } from "date-fns";
+import { compareAsc, format } from 'date-fns'
 import {
 	Box,
 	Button,
@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function filmPage() {
 	const toast = useToast()
@@ -39,7 +39,7 @@ export default function filmPage() {
 
 	const [filmSelected, setFilmSelected] = useState<IFilm>()
 
-	const { data: films } = useQuery({
+	const { data: films, isSuccess } = useQuery({
 		queryKey: ['films'],
 		queryFn: () =>
 			fetch('http://localhost:8000/films').then((res) => res.json()),
@@ -75,6 +75,14 @@ export default function filmPage() {
 		},
 	})
 
+	if (!isSuccess) {
+		return (
+			<Flex justifyContent={'center'} alignItems={'center'} h={'100vh'}>
+				<Text>Le micro service est down !</Text>
+			</Flex>
+		)
+	}
+
 	return (
 		<Flex flexDir={'column'}>
 			<Button
@@ -104,9 +112,9 @@ export default function filmPage() {
 							<Tr key={film.id}>
 								<Td>{film.id}</Td>
 								<Td>{film.name}</Td>
-								<Td isNumeric>{format(new Date(film.date), "yyyy-MM-dd")}</Td>
+								<Td isNumeric>{format(new Date(film.date), 'yyyy-MM-dd')}</Td>
 								<Td isNumeric>{film.author}</Td>
-								<Td w={"100px"}>{film.description}</Td>
+								<Td w={'100px'}>{film.description}</Td>
 								<Td>{film.image}</Td>
 								<Td></Td>
 								<Td>
