@@ -46,7 +46,7 @@ export const Header: React.FC = () => {
 			<Box>
 				<Menu>
 					<MenuButton>
-						<Avatar size="md" name="user?.email" />
+						<Avatar size="md" name={user?.userInfo.email} />
 					</MenuButton>
 					<MenuList>
 						<MenuItem
